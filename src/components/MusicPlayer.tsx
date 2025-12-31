@@ -1,16 +1,40 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 
-// Upbeat celebration music - royalty-free festive track
-const MUSIC_URL = 'https://cdn.pixabay.com/audio/2022/10/18/audio_17703d5cc8.mp3';
+// Fun upbeat New Year celebration music
+const MUSIC_URL = 'https://www.bensound.com/bensound-music/bensound-funkyelement.mp3';
 
 export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(50);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Create audio element on mount
+    const audio = new Audio(MUSIC_URL);
+    audio.loop = true;
+    audio.volume = volume / 100;
+    audio.preload = 'auto';
+    
+    audio.addEventListener('canplaythrough', () => {
+      setIsLoaded(true);
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error('Audio load error:', e);
+    });
+    
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.src = '';
+    };
+  }, []);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -18,14 +42,19 @@ export function MusicPlayer() {
     }
   }, [volume]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
+      try {
+        if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        } else {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        }
+      } catch (error) {
+        console.error('Playback error:', error);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -39,11 +68,11 @@ export function MusicPlayer() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="flex items-center gap-4 bg-gradient-card backdrop-blur-xl border border-border/50 rounded-full px-6 py-3 shadow-xl">
-        <audio ref={audioRef} src={MUSIC_URL} loop />
-        
         <div className="flex items-center gap-2 text-primary">
-          <Music className="w-4 h-4" />
-          <span className="text-sm font-medium hidden sm:inline">Festive Music</span>
+          <Music className="w-4 h-4 animate-pulse" />
+          <span className="text-sm font-medium hidden sm:inline">
+            {isLoaded ? 'Party Music' : 'Loading...'}
+          </span>
         </div>
         
         <div className="h-6 w-px bg-border" />
@@ -52,7 +81,8 @@ export function MusicPlayer() {
           variant="ghost"
           size="icon"
           onClick={togglePlay}
-          className="h-10 w-10 rounded-full bg-primary/20 hover:bg-primary/30 text-primary"
+          disabled={!isLoaded}
+          className="h-10 w-10 rounded-full bg-primary/20 hover:bg-primary/30 text-primary disabled:opacity-50"
         >
           {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
         </Button>
