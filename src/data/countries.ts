@@ -22,6 +22,7 @@ export const countries: Country[] = [
   { name: "Saudi Arabia", timezone: "Asia/Riyadh", flag: "🇸🇦", offset: 3 },
   { name: "Turkey", timezone: "Europe/Istanbul", flag: "🇹🇷", offset: 3 },
   { name: "Greece", timezone: "Europe/Athens", flag: "🇬🇷", offset: 2 },
+  { name: "Bulgaria", timezone: "Europe/Sofia", flag: "🇧🇬", offset: 2 },
   { name: "South Africa", timezone: "Africa/Johannesburg", flag: "🇿🇦", offset: 2 },
   { name: "Germany", timezone: "Europe/Berlin", flag: "🇩🇪", offset: 1 },
   { name: "France", timezone: "Europe/Paris", flag: "🇫🇷", offset: 1 },
