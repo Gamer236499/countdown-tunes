@@ -3,7 +3,8 @@ import { Play, Pause, Volume2, VolumeX, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 
-const MUSIC_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+// Upbeat celebration music - royalty-free festive track
+const MUSIC_URL = 'https://cdn.pixabay.com/audio/2022/10/18/audio_17703d5cc8.mp3';
 
 export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
